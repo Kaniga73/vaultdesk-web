@@ -1,86 +1,79 @@
-.signup-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg-primary);
-  padding: 16px;
-}
-
-.signup-card {
-  width: 100%;
-  max-width: 420px;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  padding: 40px 36px;
-  box-shadow: var(--shadow-lg);
-}
-
-.signup-logo-wrapper {
+.auth-header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 32px;
+  text-align: center;
+  margin-bottom: 24px;
 }
 
-.signup-logo-icon {
-  width: 52px;
-  height: 52px;
-  background-color: var(--accent);
-  border-radius: var(--radius-md);
+.auth-logo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  gap: 4px;
+}
+
+.auth-logo {
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-  font-size: 22px;
-  font-weight: 700;
-  color: white;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+  background: none;
+  border: none;
+  flex-shrink: 0;
 }
 
-.signup-title {
+.auth-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0;
+ 
+}
+
+.auth-brand-name {
   font-size: 24px;
   font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 4px;
+  background: linear-gradient(135deg, #0ABFBC, #0EA8A5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  margin: 0;
 }
 
-.signup-subtitle {
-  font-size: 14px;
-  color: var(--text-secondary);
-}
-
-.signup-error {
-  background-color: var(--error-bg);
-  border: 1px solid var(--error-border);
-  color: var(--error-text);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  font-size: 13px;
-  margin-bottom: 20px;
-}
-
-.signup-form {
+.password-strength {
   display: flex;
-  flex-direction: column;
-  gap: 18px;
+  gap: 5px;
+  margin-top: 4px;
 }
 
-.signup-footer {
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-secondary);
-  margin-top: 28px;
+.strength-bar {
+  flex: 1;
+  height: 3px;
+  border-radius: 99px;
+  background-color: var(--border-color);
+  transition: background-color 0.3s ease;
 }
 
-.signup-footer a {
-  color: var(--accent);
-  font-weight: 500;
-  text-decoration: none;
-  transition: color 0.2s ease;
+.strength-bar.weak   { background-color: #ef4444; }
+.strength-bar.medium { background-color: #f59e0b; }
+.strength-bar.strong { background-color: #0ABFBC; }
+
+.strength-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 3px;
 }
 
-.signup-footer a:hover {
-  color: #818cf8;
-}
+.strength-label.weak   { color: #ef4444; }
+.strength-label.medium { color: #f59e0b; }
+.strength-label.strong { color: #0ABFBC; }
+

@@ -1,212 +1,181 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEnvelope, faKey, faEye, faEyeSlash, faCircleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { useAuth } from '../context/AuthContext'
 import api from '../services/api'
+import logo from '../assets/logo.png'
+import './Login.css'
 
-const styles = {
-  page: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#0f1117',
-    padding: '16px',
-    fontFamily: 'Inter, sans-serif',
-  },
-  card: {
-    width: '100%',
-    maxWidth: '420px',
-    backgroundColor: '#1a1d27',
-    border: '1px solid #2a2d3e',
-    borderRadius: '16px',
-    padding: '32px',
-  },
-  logoWrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginBottom: '32px',
-  },
-  logoIcon: {
-    width: '48px',
-    height: '48px',
-    backgroundColor: '#6366f1',
-    borderRadius: '12px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: '16px',
-    fontSize: '20px',
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  title: {
-    fontSize: '24px',
-    fontWeight: '700',
-    color: '#ffffff',
-    margin: '0 0 4px 0',
-  },
-  subtitle: {
-    fontSize: '14px',
-    color: '#94a3b8',
-    margin: 0,
-  },
-  errorBox: {
-    backgroundColor: '#2d1b1b',
-    border: '1px solid #7f1d1d',
-    color: '#f87171',
-    borderRadius: '8px',
-    padding: '12px',
-    fontSize: '14px',
-    marginBottom: '16px',
-  },
-  fieldWrapper: {
-    marginBottom: '16px',
-  },
-  label: {
-    display: 'block',
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#94a3b8',
-    marginBottom: '6px',
-  },
-  input: {
-    width: '100%',
-    padding: '10px 16px',
-    borderRadius: '8px',
-    border: '1px solid #2a2d3e',
-    backgroundColor: '#0f1117',
-    color: '#e2e8f0',
-    fontSize: '14px',
-    boxSizing: 'border-box',
-    transition: 'border-color 0.2s ease',
-  },
-  button: {
-    width: '100%',
-    padding: '11px',
-    borderRadius: '8px',
-    border: 'none',
-    backgroundColor: '#6366f1',
-    color: 'white',
-    fontSize: '14px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    marginTop: '8px',
-    transition: 'background-color 0.2s ease',
-  },
-  footer: {
-    textAlign: 'center',
-    fontSize: '14px',
-    color: '#94a3b8',
-    marginTop: '24px',
-  },
-  link: {
-    color: '#6366f1',
-    fontWeight: '500',
-    textDecoration: 'none',
-  },
-}
 
+
+// ── Component ─────────────────────────────────
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' })
-  const [error, setError] = useState('')
+  const [errors, setErrors] = useState({})
+  const [serverError, setServerError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
 
   const { login } = useAuth()
   const navigate = useNavigate()
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
+  }
+
+  const validate = () => {
+    const newErrors = {}
+    if (!formData.email) {
+      newErrors.email = 'Email is required'
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = 'Enter a valid email address'
+    }
+    if (!formData.password) {
+      newErrors.password = 'Password is required'
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'At least 6 characters required'
+    }
+    return newErrors
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError('')
+    setServerError('')
+    const validationErrors = validate()
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      return
+    }
     setLoading(true)
     try {
       const { data } = await api.post('/auth/login', formData)
       login(data)
       navigate('/dashboard')
     } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong')
+      setServerError(
+        err.response?.data?.message || 'Something went wrong. Please try again.'
+      )
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
+    <div className="auth-page">
+      <div className="auth-card">
 
-        {/* Logo */}
-        <div style={styles.logoWrapper}>
-          <div style={styles.logoIcon}>V</div>
-          <h1 style={styles.title}>Welcome back</h1>
-          <p style={styles.subtitle}>Sign in to your VaultDesk account</p>
+        {/* Header */}
+        <div className="auth-header">
+          <div className="auth-logo-section">
+            <div className="auth-logo">
+              <img src={logo} alt="VaultDesk Logo" />
+            </div>
+            <div className="auth-brand-name">VaultDesk</div>
+          </div>
+          <h1 className="auth-title">Welcome Back</h1>
+          <p className="auth-subtitle">
+            Enter your details to sign in to your account
+          </p>
         </div>
 
-        {/* Error */}
-        {error && <div style={styles.errorBox}>{error}</div>}
+        {/* Server Error */}
+        {serverError && (
+          <div className="alert-error">
+            <FontAwesomeIcon icon={faCircleExclamation} />
+            {serverError}
+          </div>
+        )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit}>
-          <div style={styles.fieldWrapper}>
-            <label style={styles.label}>Email address</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="you@example.com"
-              required
-              style={styles.input}
-              onFocus={e => e.target.style.borderColor = '#6366f1'}
-              onBlur={e => e.target.style.borderColor = '#2a2d3e'}
-            />
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+
+          {/* Email */}
+          <div className="form-field">
+            <label className="form-label">Email Address</label>
+            <div className={`input-wrapper ${errors.email ? 'has-error' : ''}`}>
+              <span className="input-icon"><FontAwesomeIcon icon={faEnvelope} /></span>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                className="form-input"
+                autoComplete="email"
+                autoFocus
+              />
+            </div>
+            {errors.email && (
+              <span className="field-error">{errors.email}</span>
+            )}
           </div>
 
-          <div style={styles.fieldWrapper}>
-            <label style={styles.label}>Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              required
-              style={styles.input}
-              onFocus={e => e.target.style.borderColor = '#6366f1'}
-              onBlur={e => e.target.style.borderColor = '#2a2d3e'}
-            />
+          {/* Password */}
+          <div className="form-field">
+            <label className="form-label">Password</label>
+            <div className={`input-wrapper ${errors.password ? 'has-error' : ''}`}>
+              <span className="input-icon"><FontAwesomeIcon icon={faKey} /></span>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                className="form-input"
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="input-icon-btn"
+                onClick={() => setShowPassword(p => !p)}
+                tabIndex={-1}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </button>
+            </div>
+            {errors.password && (
+              <span className="field-error">{errors.password}</span>
+            )}
           </div>
 
+          {/* Remember me + Forgot password */}
+          <div className="auth-extras">
+            <label className="remember-me">
+              <input type="checkbox" />
+              <span>Remember me</span>
+            </label>
+            <span className="forgot-link">Forgot password?</span>
+          </div>
+
+          {/* Submit */}
           <button
             type="submit"
+            className="btn-primary"
             disabled={loading}
-            style={{
-              ...styles.button,
-              backgroundColor: loading ? '#4338ca' : '#6366f1',
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
-            onMouseEnter={e => { if (!loading) e.target.style.backgroundColor = '#4f46e5' }}
-            onMouseLeave={e => { if (!loading) e.target.style.backgroundColor = '#6366f1' }}
+            style={{ marginTop: '4px' }}
           >
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? (
+              <>
+                <span className="spinner" />
+                Signing in...
+              </>
+            ) : (
+              "Let's Start →"
+            )}
           </button>
+
         </form>
 
         {/* Footer */}
-        <p style={styles.footer}>
+        <p className="auth-footer">
           Don't have an account?{' '}
-          <Link
-            to="/signup"
-            style={styles.link}
-            onMouseEnter={e => e.target.style.color = '#818cf8'}
-            onMouseLeave={e => e.target.style.color = '#6366f1'}
-          >
-            Create one
-          </Link>
+          <Link to="/signup">Create one </Link>
         </p>
+
       </div>
     </div>
   )

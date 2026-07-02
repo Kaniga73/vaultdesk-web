@@ -16,6 +16,11 @@ const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    // Validate input
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -33,7 +38,11 @@ const signup = async (req, res) => {
       token: generateToken(user._id),
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Signup error:', error);
+    const message = error.message.includes('E11000') 
+      ? 'Email already registered' 
+      : error.message || 'Failed to create account';
+    res.status(500).json({ message });
   }
 };
 
