@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const workspaceRoutes = require('./routes/workspaceRoutes');
+const topicRoutes = require('./routes/topicRoutes');
 const { protect } = require('./middleware/authMiddleware');
 
 const app = express();
@@ -14,16 +16,12 @@ app.use(cors({
 }));
 app.use(express.json());
 
-
 connectDB();
 
-
+// Routes
 app.use('/api/auth', authRoutes);
-
-
-app.get('/api/protected', protect, (req, res) => {
-  res.json({ message: `Hello ${req.user.name}, you are authorized!` });
-});
+app.use('/api/workspaces', workspaceRoutes);
+app.use('/api/workspaces/:workspaceId/topics', topicRoutes);
 
 app.get('/', (req, res) => {
   res.send('VaultDesk backend is running');
