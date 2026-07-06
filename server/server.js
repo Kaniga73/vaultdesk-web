@@ -22,6 +22,7 @@ connectDB();
 app.use('/api/auth', authRoutes);
 app.use('/api/workspaces', workspaceRoutes);
 app.use('/api/workspaces/:workspaceId/topics', topicRoutes);
+app.use('/api/topics', topicRoutes);
 
 app.get('/', (req, res) => {
   res.send('VaultDesk backend is running');
