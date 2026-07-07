@@ -1,35 +1,28 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import Dashboard from './pages/Dashboard'
+import WorkspacePage from './pages/WorkspacePage'
 import ProtectedRoute from './routes/ProtectedRoute'
-
-
-const Dashboard = () => (
-  <div className="min-h-screen flex items-center justify-center"
-    style={{ backgroundColor: '#0f1117' }}>
-    <h1 className="text-2xl font-bold text-white">
-      Dashboard — Coming Day 4 🚀
-    </h1>
-  </div>
-)
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-       
+        {/* Public */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
-       
+        {/* Protected */}
         <Route path="/dashboard" element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
+          <ProtectedRoute><Dashboard /></ProtectedRoute>
+        } />
+        <Route path="/workspace/:id" element={
+          <ProtectedRoute><WorkspacePage /></ProtectedRoute>
         } />
 
-        
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Default */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   )

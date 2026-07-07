@@ -1,0 +1,120 @@
+.workspace-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  animation: cardIn 0.3s ease;
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.workspace-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 20px rgba(10, 191, 188, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Color accent strip on left */
+.workspace-card-strip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+}
+
+.workspace-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-left: 8px;
+}
+
+.workspace-card-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.workspace-card-menu {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.workspace-card:hover .workspace-card-menu {
+  opacity: 1;
+}
+
+.workspace-card-delete {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: white;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.workspace-card-delete:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.workspace-card-body {
+  padding-left: 8px;
+}
+
+.workspace-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.workspace-card-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.workspace-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-left: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.workspace-card-date {
+  font-size: 11px;
+  color: var(--text-muted);
+}
