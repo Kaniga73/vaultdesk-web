@@ -1,5 +1,7 @@
 const Topic = require('../models/Topic');
 const Workspace = require('../models/Workspace');
+const Note = require('../models/Note');
+
 
 // @desc   Get all topics in a workspace
 // @route  GET /api/workspaces/:workspaceId/topics
@@ -95,6 +97,9 @@ const deleteTopic = async (req, res) => {
     if (topic.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized' });
     }
+
+    // Cascade delete all notes in this topic
+    await Note.deleteMany({ topic: req.params.id });
 
     await topic.deleteOne();
     res.json({ message: 'Topic deleted successfully' });

@@ -103,6 +103,11 @@ const deleteWorkspace = async (req, res) => {
     // Now delete the workspace itself
     await workspace.deleteOne();
 
+    // Inside deleteWorkspace, update the cascade section:
+    await Note.deleteMany({ workspace: req.params.id });
+    await Topic.deleteMany({ workspace: req.params.id });
+    await workspace.deleteOne();
+
     res.json({ message: 'Workspace deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
