@@ -11,6 +11,7 @@ import {
   deleteTopic,
 } from '../services/topicService'
 import './WorkspacePage.css'
+import { motion } from "motion/react";
 
 const PlusIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -117,8 +118,12 @@ const WorkspacePage = () => {
   return (
     <div className="workspace-page">
       <Navbar />
-
-      <div className="workspace-page-content">
+      <motion.div
+        className="workspace-page-content"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      >
 
         {/* Back Button */}
         <button className="back-btn" onClick={() => navigate('/dashboard')}>
@@ -179,7 +184,9 @@ const WorkspacePage = () => {
           </div>
         )}
 
-      </div>
+      
+       </motion.div>
+       
 
       {/* Create Topic Modal */}
       {showCreateModal && (
@@ -295,6 +302,8 @@ const WorkspacePage = () => {
         </Modal>
       )}
 
+   
+   
     </div>
   )
 }

@@ -1,8 +1,29 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import SearchBar from './SearchBar'
 import './Navbar.css'
-import logo from '../assets/logo.png'
+import { useTheme } from '../context/ThemeContext'
+import logo from "../assets/logo.png";
 
+// Inside Navbar component:
+
+
+const SearchIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+  </svg>
+)
 
 
 const LogoutIcon = () => (
@@ -15,8 +36,11 @@ const LogoutIcon = () => (
 )
 
 const Navbar = () => {
+  const { isDark, toggleTheme } = useTheme()
+
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const [showSearch, setShowSearch] = useState(false)
 
   const handleLogout = () => {
     logout()
@@ -34,6 +58,7 @@ const Navbar = () => {
   }
 
   return (
+    <>
     <nav className="navbar">
       {/* Brand */}
       <Link to="/dashboard" className="navbar-brand">
@@ -45,21 +70,43 @@ const Navbar = () => {
         </span>
       </Link>
 
-      {/* Right side */}
       <div className="navbar-right">
-        <div className="navbar-user">
-          <div className="navbar-avatar">
-            {getInitials(user?.name)}
-          </div>
-          <span className="navbar-username">{user?.name}</span>
-        </div>
+          {/* Search Button */}
+          <button
+            className="navbar-search-btn"
+            onClick={() => setShowSearch(true)}
+            title="Search notes (Ctrl+K)"
+          >
+            <SearchIcon />
+            <span>Search notes...</span>
+            <span className="search-shortcut">Ctrl K</span>
+          </button>
 
-        <button className="navbar-logout" onClick={handleLogout}>
-          <LogoutIcon />
-          Logout
-        </button>
-      </div>
-    </nav>
+          <button
+  className="navbar-theme-btn"
+  onClick={toggleTheme}
+  title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+>
+  {isDark ? '☀️' : '🌙'}
+</button>
+           <div className="navbar-user">
+            <div className="navbar-avatar">
+              {getInitials(user?.name)}
+            </div>
+            <span className="navbar-username">{user?.name}</span>
+          </div>
+
+          <button className="navbar-logout" onClick={handleLogout}>
+            <LogoutIcon />
+            Logout
+          </button>
+        </div>
+      </nav>
+ 
+      {showSearch && (
+        <SearchBar onClose={() => setShowSearch(false)} />
+      )}
+  </>
   )
 }
 

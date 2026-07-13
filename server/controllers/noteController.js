@@ -126,6 +126,29 @@ const deleteNote = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// @desc   Search notes by keyword
+// @route  GET /api/notes/search?q=keyword
+const searchNotes = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim().length === 0) {
+      return res.json([]);
+    }
+
+    const notes = await Note.find({
+      user: req.user._id,
+      $text: { $search: q },
+    })
+      .select('-content')
+      .sort({ score: { $meta: 'textScore' } })
+      .limit(20);
+
+    res.json(notes);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   getNotes,
@@ -133,4 +156,5 @@ module.exports = {
   createNote,
   updateNote,
   deleteNote,
+  searchNotes,
 };

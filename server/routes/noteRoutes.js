@@ -7,7 +7,11 @@ const {
   createNote,
   updateNote,
   deleteNote,
+  searchNotes,
 } = require('../controllers/noteController');
+
+// Search — must be before /:id to avoid conflict
+router.get('/search', protect, searchNotes);
 
 // Nested under topic
 router.route('/')

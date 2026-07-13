@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 import WorkspaceCard from '../components/WorkspaceCard'
 import Modal from '../components/Modal'
+import { useToast } from '../context/ToastContext'
 import EmptyState from '../components/EmptyState'
 import {
   getWorkspaces,
@@ -10,6 +11,7 @@ import {
   deleteWorkspace,
 } from '../services/workspaceService'
 import './Dashboard.css'
+import {motion} from 'motion/react'
 
 // ── Icons ─────────────────────────────────────
 const PlusIcon = () => (
@@ -51,6 +53,7 @@ const Dashboard = () => {
   const [selectedWorkspace, setSelectedWorkspace] = useState(null)
   const [creating, setCreating] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const { showToast } = useToast()
 
   const [formData, setFormData] = useState({
     name: '',
@@ -75,20 +78,21 @@ const Dashboard = () => {
     }
   }
 
-  const handleCreate = async () => {
-    if (!formData.name.trim()) return
-    setCreating(true)
-    try {
-      const newWorkspace = await createWorkspace(formData)
-      setWorkspaces(prev => [newWorkspace, ...prev])
-      setShowCreateModal(false)
-      setFormData({ name: '', description: '', icon: '📁', color: '#0ABFBC' })
-    } catch (error) {
-      console.error('Failed to create workspace:', error)
-    } finally {
-      setCreating(false)
-    }
+const handleCreate = async () => {
+  if (!formData.name.trim()) return
+  setCreating(true)
+  try {
+    const newWorkspace = await createWorkspace(formData)
+    setWorkspaces(prev => [newWorkspace, ...prev])
+    setShowCreateModal(false)
+    setFormData({ name: '', description: '', icon: '📁', color: '#0ABFBC' })
+    showToast('Workspace created successfully!')
+  } catch (error) {
+    showToast('Failed to create workspace', 'error')
+  } finally {
+    setCreating(false)
   }
+}
 
   const handleDeleteClick = (workspace) => {
     setSelectedWorkspace(workspace)
@@ -96,27 +100,33 @@ const Dashboard = () => {
   }
 
   const handleDeleteConfirm = async () => {
-    if (!selectedWorkspace) return
-    setDeleting(true)
-    try {
-      await deleteWorkspace(selectedWorkspace._id)
-      setWorkspaces(prev =>
-        prev.filter(w => w._id !== selectedWorkspace._id)
-      )
-      setShowDeleteModal(false)
-      setSelectedWorkspace(null)
-    } catch (error) {
-      console.error('Failed to delete workspace:', error)
-    } finally {
-      setDeleting(false)
-    }
+  if (!selectedWorkspace) return
+  setDeleting(true)
+  try {
+    await deleteWorkspace(selectedWorkspace._id)
+    setWorkspaces(prev =>
+      prev.filter(w => w._id !== selectedWorkspace._id)
+    )
+    setShowDeleteModal(false)
+    setSelectedWorkspace(null)
+    showToast('Workspace deleted')
+  } catch (error) {
+    showToast('Failed to delete workspace', 'error')
+  } finally {
+    setDeleting(false)
   }
+}
 
   return (
     <div className="dashboard">
       <Navbar />
 
-      <div className="dashboard-content">
+         <motion.div
+      className="dashboard-content"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+    >
 
         {/* Page Header */}
         <div className="page-header">
@@ -158,17 +168,27 @@ const Dashboard = () => {
             }
           />
         ) : (
-          <div className="workspace-grid">
-            {workspaces.map(workspace => (
-              <WorkspaceCard
-                key={workspace._id}
-                workspace={workspace}
-                onDelete={handleDeleteClick}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+        <div className="workspace-grid">
+  {workspaces.map((workspace, index) => (
+    <motion.div
+      key={workspace._id}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.3,
+        delay: index * 0.06,
+        ease: [0.22, 1, 0.36, 1]
+      }}
+    >
+      <WorkspaceCard
+        workspace={workspace}
+        onDelete={handleDeleteClick}
+      />
+    </motion.div>
+  ))}
+</div>
+   )}      
+
 
       {/* Create Modal */}
       {showCreateModal && (
@@ -316,6 +336,7 @@ const Dashboard = () => {
         </Modal>
       )}
 
+    </motion.div>
     </div>
   )
 }

@@ -11,6 +11,7 @@ import {
   deleteNote,
 } from '../services/noteService'
 import './TopicPage.css'
+import {motion} from 'motion/react'
 
 const PlusIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -132,7 +133,12 @@ const fetchData = async () => {
     <div className="topic-page">
       <Navbar />
 
-      <div className="topic-page-content">
+      <motion.div
+  className="topic-page-content"
+  initial={{ opacity: 0, y: 12 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+>
 
         {/* Breadcrumb */}
         <div className="breadcrumb">
@@ -230,7 +236,7 @@ const fetchData = async () => {
           </div>
         )}
 
-      </div>
+      </motion.div>
 
       {/* Create Note Modal */}
       {showCreateModal && (
