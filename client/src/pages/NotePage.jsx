@@ -10,6 +10,7 @@ import Navbar from '../components/Navbar'
 import { getNote, updateNote } from '../services/noteService'
 import { autoFormatPastedText } from '../utils/autoFormat'
 import './NotePage.css'
+import { exportNotePDF } from '../services/noteService'
 
 // ── Save Status ────────────────────────────────
 const SAVE_STATUS = {
@@ -42,6 +43,7 @@ const NotePage = () => {
   const [revisionStatus, setRevisionStatus] = useState('not-started')
   const [saveStatus, setSaveStatus] = useState(SAVE_STATUS.IDLE)
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
 
   const saveTimerRef = useRef(null)
 
@@ -195,6 +197,16 @@ const NotePage = () => {
       </div>
     )
   }
+  const handleExport = async () => {
+  setExporting(true)
+  try {
+    await exportNotePDF(noteId, title)
+  } catch (error) {
+    console.error('Export failed:', error)
+  } finally {
+    setExporting(false)
+  }
+}
 
   return (
     <div className="note-page">
@@ -202,7 +214,7 @@ const NotePage = () => {
 
       {/* Toolbar */}
       <div className="editor-topbar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div className="editor-toolbar-wrap">
 
           {/* Back */}
           <button
@@ -329,12 +341,30 @@ const NotePage = () => {
           )}
         </div>
 
-        {/* Save status */}
+        {/* Save status + export */}
         <div className="editor-actions">
           <span className={`save-indicator ${saveStatus}`}>
             {saveStatus === SAVE_STATUS.SAVING && '● Saving...'}
             {saveStatus === SAVE_STATUS.SAVED && '✓ Saved'}
           </span>
+
+          <button
+            type="button"
+            className={`export-pdf-btn ${exporting ? 'is-exporting' : ''}`}
+            onClick={handleExport}
+            disabled={exporting}
+          >
+            {exporting ? (
+              <>
+                <span className="spinner" />
+                Exporting...
+              </>
+            ) : (
+              <>
+                ↓ Export PDF
+              </>
+            )}
+          </button>
         </div>
       </div>
 

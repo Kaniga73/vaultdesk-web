@@ -6,6 +6,7 @@ import WorkspacePage from './pages/WorkspacePage'
 import TopicPage from './pages/TopicPage'
 import NotePage from './pages/NotePage'
 import ProtectedRoute from './routes/ProtectedRoute'
+import NotFound from './pages/NotFound'
 
 const App = () => {
   return (
@@ -28,6 +29,8 @@ const App = () => {
         } />
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      
+      <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )

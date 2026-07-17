@@ -1,5 +1,6 @@
 const Note = require('../models/Note');
 const Topic = require('../models/Topic');
+const { generateNotePDF } = require('../services/pdfService');
 
 // @desc   Get all notes in a topic
 // @route  GET /api/topics/:topicId/notes
@@ -149,6 +150,24 @@ const searchNotes = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const exportNotePDF = async (req, res) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({ message: 'Note not found' });
+    }
+
+    if (note.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Not authorized' });
+    }
+
+    generateNotePDF(note, res);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 
 module.exports = {
   getNotes,
@@ -157,4 +176,5 @@ module.exports = {
   updateNote,
   deleteNote,
   searchNotes,
+  exportNotePDF,
 };

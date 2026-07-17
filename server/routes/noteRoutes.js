@@ -8,15 +8,19 @@ const {
   updateNote,
   deleteNote,
   searchNotes,
+  exportNotePDF,
 } = require('../controllers/noteController');
 
-// Search — must be before /:id to avoid conflict
+// Search
 router.get('/search', protect, searchNotes);
 
 // Nested under topic
 router.route('/')
   .get(protect, getNotes)
   .post(protect, createNote);
+
+// Export PDF
+router.get('/:id/export/pdf', protect, exportNotePDF);
 
 // Standalone note operations
 router.route('/:id')

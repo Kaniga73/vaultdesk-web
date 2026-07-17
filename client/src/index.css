@@ -158,3 +158,99 @@ body {
   border-color: #2a2d3e;
   color: #94a3b8;
 }
+/* ─── Responsive ─────────────────────────── */
+@media (max-width: 768px) {
+  /* Navbar */
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .navbar-search-btn {
+    min-width: unset;
+    width: 36px;
+    padding: 7px;
+  }
+
+  .navbar-search-btn span:not(.search-shortcut) {
+    display: none;
+  }
+
+  .search-shortcut {
+    display: none;
+  }
+
+  .navbar-username {
+    display: none;
+  }
+
+  /* Dashboard */
+  .dashboard-content {
+    padding: 24px 16px;
+  }
+
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Workspace Page */
+  .workspace-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Topic Page */
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Note Editor */
+  .editor-topbar {
+    padding: 8px 16px;
+    gap: 8px;
+  }
+
+  .editor-toolbar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+
+  .editor-body {
+    padding: 24px 16px 60px;
+  }
+
+  .note-title-input {
+    font-size: 24px;
+  }
+
+  /* Auth Pages */
+  .auth-card {
+    padding: 28px 20px;
+  }
+
+  /* Modal */
+  .modal {
+    max-width: calc(100vw - 32px);
+  }
+
+  /* Search */
+  .search-modal {
+    max-width: calc(100vw - 32px);
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar-group {
+    padding-right: 4px;
+    margin-right: 3px;
+  }
+
+  .workspace-page-title-row {
+    flex-wrap: wrap;
+  }
+}
